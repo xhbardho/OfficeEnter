@@ -1,4 +1,5 @@
-﻿using Office.Context.Dtos;
+﻿using Office.Context;
+using Office.Context.Dtos;
 using Office.Context.Models;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,11 @@ namespace Office.Services.Interfaces
        List<Tag> FilteredTagsByName(string statusName);
        List<Tag> FilteredTagsById(int statusId);
        bool DeactivateTagForUser(int userId);
+       public bool ActivateTagForUser(int userId);
        Tag AddTag(CreateTagForUserModel tag);
-       int GetTagStatusIdByStatusName(string statusName);
+       User  USerById(int  userId);
+
+        int GetTagStatusIdByStatusName(string statusName);
 
     }
 }

@@ -16,11 +16,11 @@ namespace Office.Controllers
     [Route("api/[controller]")]
     public class TagController : ControllerBase
     {
-        private readonly ILogger<ValuesController> _logger;
+        private readonly ILogger<TagController> _logger;
         private readonly ITagService _tagService;
 
 
-        public TagController(ILogger<ValuesController> logger, ITagService tagService )
+        public TagController(ILogger<TagController> logger, ITagService tagService )
         {
             _logger = logger;
             _tagService = tagService;
@@ -33,7 +33,7 @@ namespace Office.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("FilterTagByStatus")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public List<Tag> FilterTagById(int statusId)
         {
             try
@@ -52,7 +52,7 @@ namespace Office.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("FilterTagByStatusName")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public List<Tag> FilterTagByStatusName(string statusName)
         {
             try
@@ -93,8 +93,8 @@ namespace Office.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("CreateTagForUser")]
-        [Authorize]
-        public Tag CreateTagForUser(CreateTagForUserModel createTagForUserModel)
+        [Authorize(Roles = "Admin")]
+        public Tag CreateTagForUser([FromBody] CreateTagForUserModel createTagForUserModel)
         {
             try
             {
@@ -112,12 +112,12 @@ namespace Office.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("ActivateTagForUser")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public string ActivateTagForUser(int userId)
         {
             try
             {
-                var filteredTags = _tagService.DeactivateTagForUser(userId);
+                var filteredTags = _tagService.ActivateTagForUser(userId);
                 if (filteredTags)
                     return "Tag deactivated succesfully!";
                 else

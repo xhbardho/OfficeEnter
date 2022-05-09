@@ -16,5 +16,7 @@ namespace Office.Services.Interfaces
         Role GetRoleByName(string roleName);
 
         User Login(LoginRequest login);
+        List<User> GetAllUsers();
+
     }
 }

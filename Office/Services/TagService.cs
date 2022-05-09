@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Office.Context.Dtos;
+using Office.Helper;
 
 namespace Office.Services
 {
     public class TagService : ITagService
     {
-        private readonly ILogger<UserService> _logger;
+        private readonly ILogger<TagService> _logger;
         private readonly OfficeDbContext _officeDbContext;
-        public TagService(ILogger<UserService> logger, OfficeDbContext officeDbContext)
+        public TagService(ILogger<TagService> logger, OfficeDbContext officeDbContext)
         {
             _logger = logger;
             _officeDbContext = officeDbContext;
@@ -23,8 +24,22 @@ namespace Office.Services
         public Tag AddTag(CreateTagForUserModel tagViewModel)
         {
             try
-            { Tag tag = new Tag();
-                 _officeDbContext.Add(tag);
+            {
+                Tag tag = new Tag
+                {
+                    TagStatusId = tagViewModel.TagStatus,
+                    UserId = tagViewModel.UserId,
+                    Description = tagViewModel.TagName,
+                    CreationTime = DateTime.Now
+                };
+                var user = USerById(tagViewModel.UserId);
+                if (user.Role.Name == "Admin")
+                    tag.ExpiredTime = DateTime.Now.AddYears(3);
+                else if (user.Role.Name == "Employee")
+                    tag.ExpiredTime = DateTime.Now.AddYears(1);
+                else if (user.Role.Name == "Guest")
+                    tag.ExpiredTime = DateTime.Now.AddHours(1);
+                _officeDbContext.Add(tag);
                  _officeDbContext.SaveChanges();
                 return tag;
             }
@@ -34,13 +49,29 @@ namespace Office.Services
                 throw;
             }
         }
+        public bool ActivateTagForUser(int userId)
+        {
+            try
+            {
+                var tag = _officeDbContext.Tags.Where(x => x.UserId == userId).ToList().FirstOrDefault();
+                int activateTagStatusId = GetTagStatusIdByStatusName(StaticStrings.ACTIVE_TAG_DESCRIPTION);
+                tag.TagStatusId = activateTagStatusId;
+                _officeDbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
 
+                return false;
+            }
+        }
         public bool DeactivateTagForUser(int userId)
         {
             try
             {
                 var tag = _officeDbContext.Tags.Where(x => x.UserId == userId).ToList().FirstOrDefault();
-                tag.TagStatusId = 4;
+                int deactivateTagStatusId = GetTagStatusIdByStatusName(StaticStrings.DEACTIVATE_TAG_DESCRIPTION);
+                tag.TagStatusId = deactivateTagStatusId;
                  _officeDbContext.SaveChanges();
                 return true;
             }
@@ -50,7 +81,6 @@ namespace Office.Services
                 return false;
             }
         }
-
         public List<Tag> FilteredTagsById(int statusId)
         {
             try
@@ -64,7 +94,6 @@ namespace Office.Services
                 throw;
             }        
         }
-
         public List<Tag> FilteredTagsByName(string statusName)
         {
             try
@@ -78,7 +107,6 @@ namespace Office.Services
                 throw;
             }
         }
-
         public int GetTagStatusIdByStatusName(string statusName)
         {
             int id = 0;
@@ -94,6 +122,20 @@ namespace Office.Services
                 return id;
             }
            
+        }
+        public User USerById(int userId)
+        {
+            User user = new User();
+            try
+            {
+                user = _officeDbContext.Users.Include(x => x.Role).FirstOrDefault(x => x.Id == userId);
+            }
+            catch (Exception ex)
+            {
+
+                throw ;
+            }
+            return user;
         }
     }
 }

@@ -5,6 +5,7 @@ using Office.Context.Dtos;
 using Office.Context.Models;
 using Office.Controllers;
 using Office.Services.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -94,6 +95,21 @@ namespace Office.Services
 
                 throw;
             }
+        }
+
+        public List<User> GetAllUsers()
+        {
+            List<User> users = new List<User>();
+            try
+            {
+                users = _officeDbContext.Users.ToList();
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
+            return users;
         }
     }
 }
