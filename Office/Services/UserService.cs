@@ -11,20 +11,16 @@ using System.Threading.Tasks;
 
 namespace Office.Services
 {
-
-
     public class UserService : IUserService
     {
         private readonly ILogger<UserService> _logger;
         private readonly OfficeDbContext _officeDbContext;
 
-        // inject database for user validation
         public UserService(ILogger<UserService> logger, OfficeDbContext officeDbContext)
         {
             _logger = logger;
             _officeDbContext = officeDbContext;
         }
-
         public  User AddUser(RegisterViewModel user)
         {
             try
@@ -33,23 +29,17 @@ namespace Office.Services
                 {
                     Username = user.Username,
                     Password = Helper.PasswordEncrypt.Encrypt(user.Password),
-                    
                 };
                 applicationUser.RoleId = GetRoleByName(user.RoleName).Id;
-                
-
-                 _officeDbContext.Users.Add(applicationUser);
-                 _officeDbContext.SaveChanges();
+                _officeDbContext.Users.Add(applicationUser);
+                _officeDbContext.SaveChanges();
                 return applicationUser;
             }
             catch (System.Exception ex)
             {
-
+                throw new System.NotImplementedException();
             }
-            throw new System.NotImplementedException();
-
         }
-
         public bool IsValidUser(string userName, string password)
         {
             _logger.LogInformation($"Validating user [{userName}]");
@@ -69,12 +59,10 @@ namespace Office.Services
             try
             {
                 var role = _officeDbContext.Roles.Where(x=>x.Name==roleName).FirstOrDefault();
-                //var role = await _officeDbContext.Roles.Where(x => x.Name == roleName).FirstOrDefaultAsync();
                 return role;
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }
@@ -83,17 +71,13 @@ namespace Office.Services
             try
             {
                 var roles = _officeDbContext.Roles.ToList(); ;
-                //var role = await _officeDbContext.Roles.Where(x => x.Name == roleName).FirstOrDefaultAsync();
                 return roles;
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }
-
-
         public User Login(LoginRequest login)
         {
             User user = new User();
@@ -107,11 +91,9 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }
-
         public List<UserViewModel> GetAllUsers()
         {
             List<UserViewModel> users = new List<UserViewModel>();
@@ -125,12 +107,10 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
             return users;
         }
-
         public bool DoesUserExists(string userName)
         {
             try
@@ -142,11 +122,9 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }
-
         public Tag GetTagForUser(int userId)
         {
             try
@@ -156,7 +134,6 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }

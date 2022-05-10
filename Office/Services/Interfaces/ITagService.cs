@@ -16,8 +16,7 @@ namespace Office.Services.Interfaces
        public bool ActivateTagForUser(int userId);
        Tag AddTag(CreateTagForUserModel tag);
        User  USerById(int  userId);
-
-        int GetTagStatusIdByStatusName(string statusName);
+       int GetTagStatusIdByStatusName(string statusName);
 
     }
 }

@@ -45,7 +45,6 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -61,7 +60,6 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-
                 return false;
             }
         }
@@ -77,7 +75,6 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-
                 return false;
             }
         }
@@ -90,7 +87,6 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-
                 throw;
             }        
         }
@@ -103,7 +99,6 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -121,7 +116,6 @@ namespace Office.Services
                 id=-1;
                 return id;
             }
-           
         }
         public User USerById(int userId)
         {

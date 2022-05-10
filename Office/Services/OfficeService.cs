@@ -66,18 +66,13 @@ namespace Office.Services
                     officeEnterAndLeaveResponse.isSuccesfull = true;
                     officeEnterAndLeaveResponse.Message = "You were succesfully checked in!!";
                     return officeEnterAndLeaveResponse;
-
                 }
-
-
             }
             catch (Exception ex)
             {
-
                 throw;
             }        
         }
-
         public bool HasTagExpired(int id)
         {
             try

@@ -63,8 +63,8 @@ namespace Office
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "API Auth Demo",
-                    Description = "A simple demo with JWT Auth APIs and Basic Auth APIs",
+                    Title = "API Office",
+                    Description = "API for an office, check in and check out",
                     Contact = new OpenApiContact
                     {
                         Name = @"GitHub Repository",

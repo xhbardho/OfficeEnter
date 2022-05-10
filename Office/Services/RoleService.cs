@@ -15,14 +15,11 @@ namespace Office.Services
     {
         private readonly ILogger<UserService> _logger;
         private readonly OfficeDbContext _officeDbContext;
-
-        // inject database for user validation
         public RoleService(ILogger<UserService> logger, OfficeDbContext officeDbContext)
         {
             _logger = logger;
             _officeDbContext = officeDbContext;
         }
-
         public async Task<Role> GetRoleByName(string roleName)
         {
             try
@@ -32,7 +29,6 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-
                 throw;
             }
         }

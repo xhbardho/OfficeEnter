@@ -13,7 +13,5 @@ namespace Office.Services.Interfaces
         public bool HasTagExpired(int id);
         public IsAlreadyInOrOut IsAlreadyInOrOut(int tagid,bool isEnterType);
         public int GetTagStatusIdByStatusName(string statusName);
-
-
     }
 }

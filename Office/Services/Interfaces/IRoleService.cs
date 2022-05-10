@@ -10,8 +10,6 @@ namespace Office.Services.Interfaces
 {
     public interface IRoleService
     {
-
         Task<Role> GetRoleByName(string roleName);
-
     }
 }
