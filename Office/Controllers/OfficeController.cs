@@ -9,6 +9,8 @@ using Office.Context.Models;
 using Office.Services;
 using Office.Context.Dtos;
 using Office.Services.Interfaces;
+using System.Net.Http;
+using System.Net;
 
 namespace Office.Controllers
 {
@@ -32,19 +34,34 @@ namespace Office.Controllers
         /// API requires JWT auth
         /// </summary>
         /// <returns></returns>
-        [HttpGet("EnterTheOffice")]
-        [Authorize(Roles = "Admin, Enployee, Guest")]
+        [HttpPost("EnterTheOffice")]
+        [Authorize(Roles = "Admin, Employee, Guest")]
         public OfficeEnterAndLeaveResponse EnterTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
         {
             try
             {
-               var filteredTags= _OfficeService.EnterOrLeaveTheOffice(officeEnterAndLeaveRequest,true);
+                if (!ModelState.IsValid) 
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Invalid request"),
+                        ReasonPhrase = "Invalid request"
+                    };
+                    throw new System.Web.Http.HttpResponseException(response);
+                }
+                
+                var filteredTags= _OfficeService.EnterOrLeaveTheOffice(officeEnterAndLeaveRequest,true);
                 return filteredTags;
             }
             catch (Exception ex)
             {
 
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent($"Something wrong happend. {ex.Message}"),
+                    ReasonPhrase = $"Something wrong happend. {ex.Message}."
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
 
@@ -52,22 +69,33 @@ namespace Office.Controllers
         /// API requires JWT auth
         /// </summary>
         /// <returns></returns>
-        [HttpGet("LeaveTheOffice")]
-        [Authorize(Roles = "Admin, Enployee, Guest")]
+        [HttpPost("LeaveTheOffice")]
+        [Authorize(Roles = "Admin, Enmloyee, Guest")]
         public OfficeEnterAndLeaveResponse LeaveTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Invalid request"),
+                        ReasonPhrase = "Invalid request"
+                    };
+                    throw new System.Web.Http.HttpResponseException(response);
+                }
                 var filteredTags = _OfficeService.EnterOrLeaveTheOffice(officeEnterAndLeaveRequest, false);
                 return filteredTags;
             }
             catch (Exception ex)
             {
-
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent($"Something wrong happend. {ex.Message}"),
+                    ReasonPhrase = $"Something wrong happend. {ex.Message}."
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
-
-
     }
 }

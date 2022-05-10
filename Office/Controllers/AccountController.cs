@@ -12,6 +12,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Office.Context;
 using Office.Context.Dtos;
+using System.Net.Http;
+using System.Net;
+using System.Collections.Generic;
+using Office.Context.Models;
 
 namespace Office.Controllers
 {
@@ -70,9 +74,9 @@ namespace Office.Controllers
             var token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
 
-            var jwt = token;
-            var handler = new JwtSecurityTokenHandler();
-            var tokenz = handler.ReadJwtToken(jwt);
+            //var jwt = token;
+            //var handler = new JwtSecurityTokenHandler();
+            //var tokenz = handler.ReadJwtToken(jwt);
            
 
 
@@ -84,8 +88,10 @@ namespace Office.Controllers
             });
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost("register")]
+        [Authorize(Roles = "Admin")]
+
         public ActionResult Register([FromBody] RegisterViewModel request)
         {
             if (!ModelState.IsValid)
@@ -94,10 +100,58 @@ namespace Office.Controllers
             }
             else 
             {
+                if(!_userService.DoesUserExists(request.Username))
                 _userService.AddUser(request);
+                else
+                    return BadRequest("This user exists in database");
             }
             return Ok();
 
+        }
+
+        /// <summary>
+        /// API requires JWT auth
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAllUsers")]
+        [Authorize(Roles = "Admin")]
+        public List<UserViewModel> GetAllUsers()
+        {
+            try
+            {
+                var users = _userService.GetAllUsers();
+                return users;
+            }
+            catch (Exception ex)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
+            }
+        }
+
+        [HttpGet("GetAllRoles")]
+        [Authorize(Roles = "Admin")]
+        public List<Role> GetAllRoles()
+        {
+            try
+            {
+                var roles = _userService.GetRoles();
+                return roles;
+                
+            }
+            catch (Exception ex)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
+            }
         }
     }
 }

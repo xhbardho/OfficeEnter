@@ -23,6 +23,7 @@ namespace Office.Context.Dtos
         /// <example>securePassword</example>
         [Required]
         [JsonPropertyName("password")]
+        [StringLength(100,MinimumLength =6,ErrorMessage ="Password must be at least 6 characters")]
         public string Password { get; set; }
     }
 }

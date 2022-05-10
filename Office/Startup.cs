@@ -69,7 +69,7 @@ namespace Office
                     {
                         Name = @"GitHub Repository",
                         Email = "Xhbardho@gmail.com",
-                        Url = new Uri("https://github.com/dotnet-labs/ApiAuthDemo")
+                        Url = new Uri("https://github.com/xhbardho/OfficeEnter")
                     }
                 });
                 //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -110,11 +110,14 @@ namespace Office
                     {basicSecurityScheme, new string[] { }}
                 });
             });
+            services.AddMvc().AddNewtonsoftJson();
             services.AddDbContext<OfficeDbContext>(item => item.UseSqlServer(Configuration.GetConnectionString("myconn")));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IRoleService, RoleService>();
-           // services.AddScoped<RoleService, UserService>();
+            services.AddScoped<IOfficeService, OfficeService>();
+
+            // services.AddScoped<RoleService, UserService>();
 
 
         }

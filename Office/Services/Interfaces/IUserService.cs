@@ -12,11 +12,17 @@ namespace Office.Services.Interfaces
     public interface IUserService
     {
         bool IsValidUser(string userName, string password);
+        bool DoesUserExists(string userName);
+
         User AddUser(RegisterViewModel user);
         Role GetRoleByName(string roleName);
 
         User Login(LoginRequest login);
-        List<User> GetAllUsers();
+        List<UserViewModel> GetAllUsers();
+         List<Role> GetRoles();
+         Tag GetTagForUser(int userId);
+
+
 
     }
 }

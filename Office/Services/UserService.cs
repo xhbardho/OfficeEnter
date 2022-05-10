@@ -78,6 +78,21 @@ namespace Office.Services
                 throw;
             }
         }
+        public List<Role> GetRoles()
+        {
+            try
+            {
+                var roles = _officeDbContext.Roles.ToList(); ;
+                //var role = await _officeDbContext.Roles.Where(x => x.Name == roleName).FirstOrDefaultAsync();
+                return roles;
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
+        }
+
 
         public User Login(LoginRequest login)
         {
@@ -97,12 +112,16 @@ namespace Office.Services
             }
         }
 
-        public List<User> GetAllUsers()
+        public List<UserViewModel> GetAllUsers()
         {
-            List<User> users = new List<User>();
+            List<UserViewModel> users = new List<UserViewModel>();
             try
             {
-                users = _officeDbContext.Users.ToList();
+               var usersList = _officeDbContext.Users.Include(x=>x.Role).ToList();
+                foreach (var item in usersList)
+                {
+                    users.Add(new UserViewModel(item));
+                }
             }
             catch (System.Exception ex)
             {
@@ -110,6 +129,36 @@ namespace Office.Services
                 throw;
             }
             return users;
+        }
+
+        public bool DoesUserExists(string userName)
+        {
+            try
+            {
+                var users = _officeDbContext.Users.FirstOrDefault(x => x.Username == userName);
+                if (users == null)
+                    return false;
+                else return true;
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public Tag GetTagForUser(int userId)
+        {
+            try
+            {
+                var tag = _officeDbContext.Tags.FirstOrDefault(x=>x.UserId==userId);
+                return tag;
+            }
+            catch (System.Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }

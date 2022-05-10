@@ -37,7 +37,7 @@ namespace Office.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("jwt")]
-        [Authorize]
+        [Authorize(Roles ="Admin, Guest")]
         public IEnumerable<int> JwtAuth()
         {
             var username = User.Identity.Name;
