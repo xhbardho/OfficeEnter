@@ -2,11 +2,14 @@
 using Microsoft.Extensions.Logging;
 using Office.Context;
 using Office.Context.Dtos;
+using Office.Context.Models;
 using Office.Helper;
 using Office.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Office.Services
@@ -25,7 +28,8 @@ namespace Office.Services
             OfficeEnterAndLeaveResponse officeEnterAndLeaveResponse = new OfficeEnterAndLeaveResponse();
             try
             {
-                var tag = _officeDbContext.Tags.Where(x => x.Id == officeEnterAndLeaveRequest.TagId).FirstOrDefault();
+                var tag = _officeDbContext.Tags.Where(x => x.Id == officeEnterAndLeaveRequest.TagId)
+                    .Include(x=>x.TagStatus).FirstOrDefault();
                 if (tag == null)
                 {
                     officeEnterAndLeaveResponse.isSuccesfull = false;
@@ -62,7 +66,16 @@ namespace Office.Services
                         officeEnterAndLeaveResponse.isSuccesfull = false;
                         officeEnterAndLeaveResponse.Message = isAlreadyInOrOut.InOrOut;
                         return officeEnterAndLeaveResponse;
+
                     }
+                    OfficeEnterAndLeave officeEnterAndLeave = new OfficeEnterAndLeave
+                    {
+                        Time = DateTime.Now,
+                        IsTypeEnter = isEnterType,
+                        TagId = officeEnterAndLeaveRequest.TagId
+                    };
+                    _officeDbContext.officeEnterAndLeaves.Add(officeEnterAndLeave);
+                    _officeDbContext.SaveChanges();
                     officeEnterAndLeaveResponse.isSuccesfull = true;
                     officeEnterAndLeaveResponse.Message = "You were succesfully checked in!!";
                     return officeEnterAndLeaveResponse;
@@ -70,7 +83,12 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }        
         }
         public bool HasTagExpired(int id)
@@ -88,10 +106,15 @@ namespace Office.Services
                 }
                 return true; 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public IsAlreadyInOrOut IsAlreadyInOrOut(int tagid,bool isEnterType)
@@ -107,14 +130,19 @@ namespace Office.Services
                         modelToReturn.isAlreadyInOrOut = true;
                         modelToReturn.InOrOut = officeEnterAndLeaves.IsTypeEnter == true ? "You are already in!" : "You are already out!";
                     }
-                    modelToReturn.isAlreadyInOrOut = false;
+                    else modelToReturn.isAlreadyInOrOut = false;
                 }
                 return modelToReturn;
             }
             catch (Exception ex)
             {
 
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public int GetTagStatusIdByStatusName(string statusName)
@@ -122,7 +150,7 @@ namespace Office.Services
             int id = 0;
             try
             {
-                var tag = _officeDbContext.Tags.Where(x => x.TagStatus.Description == statusName).FirstOrDefault();
+                var tag = _officeDbContext.TagStatus.Where(x => x.Description == statusName).FirstOrDefault();
                 id = tag != null ? tag.Id : 0;
                 return id;
             }

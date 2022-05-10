@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Office.Context.Dtos;
 using Office.Helper;
+using System.Net.Http;
+using System.Net;
 
 namespace Office.Services
 {
@@ -45,7 +47,12 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public bool ActivateTagForUser(int userId)
@@ -53,6 +60,10 @@ namespace Office.Services
             try
             {
                 var tag = _officeDbContext.Tags.Where(x => x.UserId == userId).ToList().FirstOrDefault();
+                if (tag==null)
+                {
+                    return false;
+                }
                 int activateTagStatusId = GetTagStatusIdByStatusName(StaticStrings.ACTIVE_TAG_DESCRIPTION);
                 tag.TagStatusId = activateTagStatusId;
                 _officeDbContext.SaveChanges();
@@ -60,7 +71,12 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-                return false;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Try again"),
+                    ReasonPhrase = "Something wrong happend! Try again"
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public bool DeactivateTagForUser(int userId)
@@ -68,6 +84,10 @@ namespace Office.Services
             try
             {
                 var tag = _officeDbContext.Tags.Where(x => x.UserId == userId).ToList().FirstOrDefault();
+                if (tag==null)
+                {
+                    return false;
+                }
                 int deactivateTagStatusId = GetTagStatusIdByStatusName(StaticStrings.DEACTIVATE_TAG_DESCRIPTION);
                 tag.TagStatusId = deactivateTagStatusId;
                  _officeDbContext.SaveChanges();
@@ -75,7 +95,12 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-                return false;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public List<Tag> FilteredTagsById(int statusId)
@@ -87,7 +112,12 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }        
         }
         public List<Tag> FilteredTagsByName(string statusName)
@@ -99,7 +129,12 @@ namespace Office.Services
             }
             catch (Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public int GetTagStatusIdByStatusName(string statusName)
@@ -107,7 +142,7 @@ namespace Office.Services
             int id = 0;
             try
             {
-                var tag = _officeDbContext.Tags.Where(x => x.TagStatus.Description == statusName).FirstOrDefault();
+                var tag = _officeDbContext.TagStatus.Where(x => x.Description == statusName).FirstOrDefault();
                 id = tag!=null ? tag.Id : 0;
                 return id;
             }
@@ -127,7 +162,12 @@ namespace Office.Services
             catch (Exception ex)
             {
 
-                throw ;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
             return user;
         }

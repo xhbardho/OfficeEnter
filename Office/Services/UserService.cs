@@ -7,6 +7,8 @@ using Office.Controllers;
 using Office.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Office.Services
@@ -37,7 +39,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw new System.NotImplementedException();
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public bool IsValidUser(string userName, string password)
@@ -63,7 +70,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public List<Role> GetRoles()
@@ -75,7 +87,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public User Login(LoginRequest login)
@@ -91,7 +108,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public List<UserViewModel> GetAllUsers()
@@ -107,7 +129,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
             return users;
         }
@@ -122,7 +149,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
         public Tag GetTagForUser(int userId)
@@ -134,7 +166,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
     }

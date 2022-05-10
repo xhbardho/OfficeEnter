@@ -121,7 +121,14 @@ namespace Office.Controllers
                 if (filteredTags)
                     return "Tag deactivated succesfully!";
                 else
-                    return "Could not deactivate Tag. Something happend!";
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Could not deactivate Tag. Something wrong happend!"),
+                        ReasonPhrase = "Could not deactivate Tag. Something wrong happend!"
+                    };
+                    throw new System.Web.Http.HttpResponseException(response);
+                }
             }
             catch (Exception ex)
             {
@@ -189,17 +196,24 @@ namespace Office.Controllers
                 }
                 var filteredTags = _tagService.ActivateTagForUser(userId);
                 if (filteredTags)
-                    return Ok("Tag deactivated succesfully!");
+                    return Ok("Tag activated succesfully!");
                 else
-                    return BadRequest("Could not deactivate Tag. Something happend!");
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent("Could not deactivate Tag. Something wrong happend!"),
+                        ReasonPhrase = "Could not deactivate Tag. Something wrong happend!"
+                    };
+                    throw new System.Web.Http.HttpResponseException(response);
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
                 {
-                    Content = new StringContent($"Something wrong happend. {ex.Message}"),
-                    ReasonPhrase = $"Something wrong happend. {ex.Message}."
+                    Content = new StringContent($"Something wrong happend. Try again later"),
+                    ReasonPhrase = $"Something wrong happend. Try again later."
                 };
                 throw new System.Web.Http.HttpResponseException(response);
             }

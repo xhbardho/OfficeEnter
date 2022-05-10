@@ -53,7 +53,7 @@ namespace Office.Controllers
                 return BadRequest("Invalid Request");
             }
             var user = _userService.Login(request);
-            if (user.Id <= 0)
+            if (user==null)
             {
                 return BadRequest("Invalid username or password");
             }
@@ -88,9 +88,8 @@ namespace Office.Controllers
             });
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("register")]
-        [Authorize(Roles = "Admin")]
 
         public ActionResult Register([FromBody] RegisterViewModel request)
         {

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Office.Context.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Net;
 
 namespace Office.Services
 {
@@ -29,7 +31,12 @@ namespace Office.Services
             }
             catch (System.Exception ex)
             {
-                throw;
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
             }
         }
     }
