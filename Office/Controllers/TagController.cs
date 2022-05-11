@@ -36,21 +36,17 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpGet("FilterTagByStatus")]
         [Authorize(Roles = "Admin")]
-        public List<Tag> FilterTagById(int statusId)
+        public IActionResult FilterTagById(int statusId)
         {
             try
             {
-                if (statusId <= 0) 
+                if (statusId <= 0)
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid request"),
-                        ReasonPhrase = "Invalid request"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid ID");
+
                 }
-               var filteredTags= _tagService.FilteredTagsById(statusId);
-               return  filteredTags;
+                var filteredTags= _tagService.FilteredTagsById(statusId);
+               return  Ok(filteredTags);
             }
             catch (Exception ex)
             {
@@ -68,21 +64,17 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpGet("FilterTagByStatusName")]
         [Authorize(Roles = "Admin")]
-        public List<Tag> FilterTagByStatusName(string statusName)
+        public IActionResult FilterTagByStatusName(string statusName)
         {
             try
             {
                 if (string.IsNullOrEmpty(statusName)) 
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid request"),
-                        ReasonPhrase = "Invalid request"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid status");
+
                 }
                 var filteredTags = _tagService.FilteredTagsByName(statusName);
-                return filteredTags;
+                return Ok(filteredTags);
             }
             catch (Exception ex)
             {
@@ -103,31 +95,22 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpPost("DeactivateTagForUser")]
         [Authorize(Roles ="Admin")]
-        public string DeactivateTagForUser(int userId)
+        public IActionResult DeactivateTagForUser(int userId)
         {
             try
             {
                 if (userId <= 0) 
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid request"),
-                        ReasonPhrase = "Invalid request"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid ID");
                 }
 
                 var filteredTags = _tagService.DeactivateTagForUser(userId);
                 if (filteredTags)
-                    return "Tag deactivated succesfully!";
+                    return Ok("Tag deactivated succesfully!");
                 else
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Could not deactivate Tag. Something wrong happend!"),
-                        ReasonPhrase = "Could not deactivate Tag. Something wrong happend!"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Could not deactivate Tag. Something wrong happend!");
+
                 }
             }
             catch (Exception ex)
@@ -146,22 +129,22 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpPost("CreateTagForUser")]
         [Authorize(Roles = "Admin")]
-        public TagViewModel CreateTagForUser([FromBody] CreateTagForUserModel createTagForUserModel)
+        public IActionResult CreateTagForUser([FromBody] CreateTagForUserModel createTagForUserModel)
         {
             try
             {
                 if (!ModelState.IsValid) 
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid request."),
-                        ReasonPhrase = "Invalid request."
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid request");
                 }
                 var filteredTags = _tagService.AddTag(createTagForUserModel);
+                if (filteredTags == null) 
+                {
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.NotFound), "User not found");
+
+                }
                 TagViewModel model = new TagViewModel(filteredTags);
-                return model;
+                return Ok(model);
             }
             catch (Exception ex)
             {
@@ -181,30 +164,22 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpPost("ActivateTagForUser")]
         [Authorize(Roles = "Admin")]
-        public ActionResult ActivateTagForUser(int userId)
+        public IActionResult ActivateTagForUser(int userId)
         {
             try
             {
                 if (userId < 0) 
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid ID."),
-                        ReasonPhrase = "Invalid ID."
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid request");
+
                 }
                 var filteredTags = _tagService.ActivateTagForUser(userId);
                 if (filteredTags)
                     return Ok("Tag activated succesfully!");
                 else
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Could not deactivate Tag. Something wrong happend!"),
-                        ReasonPhrase = "Could not deactivate Tag. Something wrong happend!"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Could not deactivate Tag. Something wrong happend!");
+
                 }
             }
             catch (Exception)

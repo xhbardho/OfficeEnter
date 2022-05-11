@@ -35,6 +35,10 @@ namespace Office.Services
                     CreationTime = DateTime.Now
                 };
                 var user = USerById(tagViewModel.UserId);
+                if (user==null)
+                {
+                    return null;
+                }
                 if (user.Role.Name == "Admin")
                     tag.ExpiredTime = DateTime.Now.AddYears(3);
                 else if (user.Role.Name == "Employee")

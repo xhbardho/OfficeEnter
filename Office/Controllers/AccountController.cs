@@ -114,12 +114,12 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpGet("GetAllUsers")]
         [Authorize(Roles = "Admin")]
-        public List<UserViewModel> GetAllUsers()
+        public IActionResult GetAllUsers()
         {
             try
             {
                 var users = _userService.GetAllUsers();
-                return users;
+                return Ok(users);
             }
             catch (Exception ex)
             {
@@ -134,12 +134,12 @@ namespace Office.Controllers
 
         [HttpGet("GetAllRoles")]
         [Authorize(Roles = "Admin")]
-        public List<Role> GetAllRoles()
+        public IActionResult GetAllRoles()
         {
             try
             {
                 var roles = _userService.GetRoles();
-                return roles;
+                return Ok(roles);
                 
             }
             catch (Exception ex)

@@ -36,22 +36,18 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpPost("EnterTheOffice")]
         [Authorize(Roles = "Admin, Employee, Guest")]
-        public OfficeEnterAndLeaveResponse EnterTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
+        public IActionResult EnterTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
         {
             try
             {
                 if (!ModelState.IsValid) 
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid request"),
-                        ReasonPhrase = "Invalid request"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid request");
+
                 }
-                
+
                 var filteredTags= _OfficeService.EnterOrLeaveTheOffice(officeEnterAndLeaveRequest,true);
-                return filteredTags;
+                return Ok(filteredTags);
             }
             catch (Exception ex)
             {
@@ -71,21 +67,17 @@ namespace Office.Controllers
         /// <returns></returns>
         [HttpPost("LeaveTheOffice")]
         [Authorize(Roles = "Admin, Enmloyee, Guest")]
-        public OfficeEnterAndLeaveResponse LeaveTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
+        public IActionResult LeaveTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                    {
-                        Content = new StringContent("Invalid request"),
-                        ReasonPhrase = "Invalid request"
-                    };
-                    throw new System.Web.Http.HttpResponseException(response);
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Invalid request");
+
                 }
                 var filteredTags = _OfficeService.EnterOrLeaveTheOffice(officeEnterAndLeaveRequest, false);
-                return filteredTags;
+                return Ok(filteredTags);
             }
             catch (Exception ex)
             {
