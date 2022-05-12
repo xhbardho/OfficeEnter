@@ -66,7 +66,7 @@ namespace Office.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("LeaveTheOffice")]
-        [Authorize(Roles = "Admin, Enmloyee, Guest")]
+        [Authorize(Roles = "Admin, Employee, Guest")]
         public IActionResult LeaveTheOffice([FromBody] OfficeEnterAndLeaveRequest officeEnterAndLeaveRequest)
         {
             try

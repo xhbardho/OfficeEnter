@@ -20,7 +20,7 @@ using Office.Context.Models;
 namespace Office.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly ILogger<AccountController> _logger;
@@ -104,7 +104,7 @@ namespace Office.Controllers
                 else
                     return BadRequest("This user exists in database");
             }
-            return Ok();
+            return Ok(request);
 
         }
 

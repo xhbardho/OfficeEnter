@@ -88,6 +88,32 @@ namespace Office.Controllers
                 throw new System.Web.Http.HttpResponseException(response);
             }
         }
+        /// <summary>
+        /// API requires JWT auth
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAllTags")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAllTags()
+        {
+            try
+            {
+
+                var filteredTags = _tagService.GetAllTags();
+                return Ok(filteredTags);
+            }
+            catch (Exception ex)
+            {
+
+
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent($"Something wrong happend. {ex.Message}"),
+                    ReasonPhrase = $"Something wrong happend. {ex.Message}."
+                };
+                throw new System.Web.Http.HttpResponseException(response);
+            }
+        }
 
         /// <summary>
         /// API requires JWT auth
@@ -109,7 +135,7 @@ namespace Office.Controllers
                     return Ok("Tag deactivated succesfully!");
                 else
                 {
-                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Could not deactivate Tag. Something wrong happend!");
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.NotFound), "Tag with this UserID was not found!");
 
                 }
             }
@@ -140,7 +166,7 @@ namespace Office.Controllers
                 var filteredTags = _tagService.AddTag(createTagForUserModel);
                 if (filteredTags == null) 
                 {
-                    return StatusCode(Convert.ToUInt16(HttpStatusCode.NotFound), "User not found");
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.NotFound), "User not found or is already a tag created for this user!");
 
                 }
                 TagViewModel model = new TagViewModel(filteredTags);
@@ -178,7 +204,7 @@ namespace Office.Controllers
                     return Ok("Tag activated succesfully!");
                 else
                 {
-                    return StatusCode(Convert.ToUInt16(HttpStatusCode.BadRequest), "Could not deactivate Tag. Something wrong happend!");
+                    return StatusCode(Convert.ToUInt16(HttpStatusCode.NotFound), "Tag with this UserID was not found!");
 
                 }
             }

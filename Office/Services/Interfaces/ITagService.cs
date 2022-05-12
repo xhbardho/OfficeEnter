@@ -11,12 +11,16 @@ namespace Office.Services.Interfaces
     public interface ITagService
     {
        List<Tag> FilteredTagsByName(string statusName);
-       List<Tag> FilteredTagsById(int statusId);
+        List<Tag> GetAllTags();
+
+        List<Tag> FilteredTagsById(int statusId);
        bool DeactivateTagForUser(int userId);
        public bool ActivateTagForUser(int userId);
        Tag AddTag(CreateTagForUserModel tag);
        User  USerById(int  userId);
        int GetTagStatusIdByStatusName(string statusName);
+       bool CheckIfIsAlreadyATagForThisUser(int userId);
+
 
     }
 }

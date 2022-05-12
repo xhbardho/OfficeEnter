@@ -77,7 +77,7 @@ namespace Office.Services
                     _officeDbContext.officeEnterAndLeaves.Add(officeEnterAndLeave);
                     _officeDbContext.SaveChanges();
                     officeEnterAndLeaveResponse.isSuccesfull = true;
-                    officeEnterAndLeaveResponse.Message = "You were succesfully checked in!!";
+                    officeEnterAndLeaveResponse.Message = "You were checked succesfully!!";
                     return officeEnterAndLeaveResponse;
                 }
             }

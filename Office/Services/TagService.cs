@@ -27,6 +27,11 @@ namespace Office.Services
         {
             try
             {
+                if (CheckIfIsAlreadyATagForThisUser(tagViewModel.UserId)) 
+                {
+                    return null;
+                }
+
                 Tag tag = new Tag
                 {
                     TagStatusId = tagViewModel.TagStatus,
@@ -141,6 +146,23 @@ namespace Office.Services
                 throw new System.Web.Http.HttpResponseException(response);
             }
         }
+        public List<Tag> GetAllTags()
+        {
+            try
+            {
+                var tags = _officeDbContext.Tags.ToList();
+                return tags;
+            }
+            catch (Exception ex)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
+            }
+        }
         public int GetTagStatusIdByStatusName(string statusName)
         {
             int id = 0;
@@ -175,5 +197,26 @@ namespace Office.Services
             }
             return user;
         }
+        public bool CheckIfIsAlreadyATagForThisUser(int userId)
+        {
+            try
+            {
+                var tags = _officeDbContext.Tags.Where(x=>x.UserId== userId).FirstOrDefault();
+                if (tags == null)
+                    return false;
+                else return true;
+            }
+            catch (Exception ex)
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Something wrong happend! Error: " + ex.Message),
+                    ReasonPhrase = "Something wrong happend! Error: " + ex.Message
+                };
+                throw new System.Web.Http.HttpResponseException(response);
+            }
+        }
+
+
     }
 }
